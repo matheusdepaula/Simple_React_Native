@@ -4,6 +4,7 @@ import { signInOnFirebaseAsync } from '../services/firebaseApi';
 import { StackActions, NavigationActions } from 'react-navigation';
 
 const icon = require('../../assets/to-do.png');
+const info = require('../../assets/info_btn.png');
 
 export default class Login extends Component {
   static navigationOptions = { 
@@ -53,6 +54,10 @@ export default class Login extends Component {
     );
   }
 
+  showAlertInfo = () => {
+    Alert.alert("Easy Access", 'Email: matheus@gmail.com   Pass: 12345678'); 
+  }
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -62,12 +67,20 @@ export default class Login extends Component {
           <Image source={icon} style={{width: 220, height: 190}}/>
         </View>
 
-        <TextInput 
-          style={styles.textContainer}
-          placeholder={'E-mail'}
-          value={this.state.email}
-          keyboardType={'email-address'}
-          onChangeText={email => this.setState({email})} />
+        <View style={{flexDirection: 'row'}}>
+          <TextInput 
+            style={[styles.textContainer, {flex: 1}]}
+            placeholder={'E-mail'}
+            value={this.state.email}
+            keyboardType={'email-address'}
+            onChangeText={email => this.setState({email})} />
+
+          <TouchableOpacity style={{marginHorizontal: 12, alignSelf: 'center'}} onPress={ () => this.showAlertInfo()}> 
+            <Image source={info} style={{width: 22, height: 22}}/>
+          </TouchableOpacity>
+
+        </View>
+
         <View style={styles.separator}/>
 
         <TextInput 
@@ -105,7 +118,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#FEFEFE',
   },
   logoContainer: {
     justifyContent: 'center',
