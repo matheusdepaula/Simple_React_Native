@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {TextInput, StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Text, Image, Button, Alert, SafeAreaView} from 'react-native';
+import {TextInput, StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Text, Image, Button, Alert, SafeAreaView, ActivityIndicator} from 'react-native';
 import { signInOnFirebaseAsync } from '../services/firebaseApi';
 import { StackActions, NavigationActions } from 'react-navigation';
 
@@ -13,7 +13,8 @@ export default class Login extends Component {
 
   state = {
     email: this.props.email,
-    password: ''
+    password: '',
+    loading: false
   }
 
   onRegisterPress = () => {
@@ -58,7 +59,15 @@ export default class Login extends Component {
     Alert.alert("Easy Access", 'Email: matheus@gmail.com   Pass: 12345678'); 
   }
 
-  render() {
+  renderLoading = () => {
+    return (
+      <View style={styles.load}> 
+        <ActivityIndicator size='large'/>
+      </View>
+    )
+  }
+
+  renderContent = () => {
     return (
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView behavior="padding" enabled>
@@ -94,11 +103,17 @@ export default class Login extends Component {
         {this.renderRegisterButton()}
 
         </KeyboardAvoidingView>
+        {this.state.loading && this.renderLoading()}
       </SafeAreaView>
     );
   }
 
+  render() {
+    return this.renderContent();
+  }
+
   async _signInAsync() {
+    this.setState({ loading: true });
     try {
       const user = await signInOnFirebaseAsync(this.state.email,this.state.password);
       const resetNavigation = StackActions.reset({
@@ -110,6 +125,7 @@ export default class Login extends Component {
       this.props.navigation.dispatch(resetNavigation);  
     } catch (error) {
       Alert.alert("Login Failed", error.message); 
+      this.setState({ loading: false });
     }
   }
 }
@@ -145,5 +161,15 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     height: 45, 
     backgroundColor: '#364a6b'
+  },
+  load: {
+    flex: 1, 
+    position: 'absolute', 
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   }
 });
